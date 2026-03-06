@@ -7,10 +7,11 @@
 </head>
 
 <style>
-
-        #id_body {
+    #id_body {
+        margin: 10;
         font-family: Arial, Helvetica, sans-serif;
         font-size: large;
+        background-color: F4F4F4;
     }
 
     #id_resultado {
@@ -29,28 +30,28 @@
     }
 </style>
 
-<body id="id_body">
+<body id="id_body" >
 
-    <h1 style="text-align: center;">Simulador Financeiro de Estacionamento</h2>
+    <h1 style="text-align: center; background-color: rgb(50, 37, 133); color: white;">Simulador Financeiro - SmartPark</h2>
         <hr>
         <div style="text-align: center;">
             <p>
-                <label>Número de Vagas:</label><br>
+                <label><b>Número de Vagas:</b></label><br>
                 <input type="number" id="numVagas_id" required>
             </p>
 
             <p>
-                <label>Valor Médio do Ticket (R$):</label><br>
+                <label><b>Valor Médio do Ticket (R$):</b></label><br>
                 <input type="number" id="ticket_id" required>
             </p>
 
             <p>
-                <label>Dias de Funcionamento por Mês:</label><br>
+                <label><b>Dias de Funcionamento por Mês:</b></label><br>
                 <input type="number" id="dias_id" required>
             </p>
 
             <p>
-                <label>Taxa de Ocupação Atual (%):</label><br>
+                <label><b>Taxa de Ocupação Atual (%):</b></label><br>
                 <input type="number" id="taxa_id" value="65" required>
             </p>
             <button onclick="calcular()">Calcular Resultados</button>
@@ -76,7 +77,7 @@
         let valorSensores = qtdSensores * 10;// cada sensor custa R$10
         let valorJumpers = qtdJumpers * 1; // cada jumper custa R$1
 
-        let comissao = 3;// valor base de valor para multiplicação
+        let comissao = 10;// valor base de valor para multiplicação
         let custoSistema = comissao * (valorArduino + valorSensores + valorJumpers); // custo total do sistema valor de
         // todas as peças ultilizadas no estacionamento * a comissao pre avaliada
 
@@ -87,7 +88,7 @@
         let novaOcupacao = ocupacaoAtual + aumento;// nova ocupação apos o aumento 
         if (novaOcupacao > 100) {// sistema que impede passar de 100%
             novaOcupacao = 100;
-        }   
+        }
 
         //
         let recMaxMes = nVagas * ticketMedio * diasMes; // receita maxima do mes 100% ocupado
@@ -111,17 +112,18 @@
         }
         let html = `
     <div class="main">
-    <h1> Resultados da simulação </h1>
+    <h1 style="text-align: center;"> <b> Resultados da simulação </b></h1>
     <br>
 
-    <h2> Visão geral do Estacionamento:</h2>
+    <h2>Visão geral do Estacionamento:</h2>
 
     <div class="texto">
-    <p>Número de Vagas: ${nVagas}</p>
-    <p>Valor Médio do Ticket: R$${ticketMedio.toFixed(2)}</p>
-    <p>Dias de Funcionamento por Mês: ${diasMes} </p>
-    <p>Taxa de Ocupação Atual: ${ocupacaoAtual.toFixed(2)}</p>
-    <p>Receita mensal atual: R$ ${recMesAtual}.</p>
+    <p>Número de Vagas: <b>${nVagas}</b></p>
+    <p>Valor Médio do Ticket: <b>R$${ticketMedio.toFixed(2)}</b></p>
+    <p>Dias de Funcionamento por Mês: <b>${diasMes}</b> </p>
+    <p>Taxa de Ocupação Atual: <b>${ocupacaoAtual.toFixed(2)}</b></p>
+    <p>Receita mensal atual:<b> R$${recMesAtual.toFixed(2)}</b>.</p>
+    <p>Investimento total para implatação do sistema:<b> R$${custoSistema.toFixed(2)}</b></p>
     </div>
 
     <br>
@@ -129,8 +131,8 @@
     <h2> Análise de perdas: </h2>
 
     <div class="texto">
-    <p>Seu estacionamento opera com ${espacoDisponivel}% de ociosidade.</p>
-    <p>Perda mensal estimada é de <span style="color: red;"><b>R$${perdaMes.toFixed(2)}</b></span>,</p>
+    <p>Seu estacionamento opera com <b>${espacoDisponivel}% de ociosidade.</b></p>
+    <p>Perda mensal estimada é de <span style="color: red;"><b>R$${perdaMes.toFixed(2)}</b></span>.</p>
     <p>Isso significa uma perda anual de <span style="color: red;"><b>R$${recAnoAtual.toFixed(2)}</b></span>.</P
     </div>
 
@@ -149,9 +151,9 @@
     <h2>Potencial com nosso sistema:</h2>
 
     <div class="texto">
-    <p>Com nosso sistema, prevemos que a sua taxa de ocupação irá aumentar de ${ocupacaoAtual}% para <span style="color: green;"><b>${novaOcupacao}%</b></span>.</p>
-    <p>A previsão também é que sua receita mensal atual sairá de R$ ${recMesAtual} para R$ ${recMesSistema} com nosso sistema.</p>
-    <p>Com isso, o retorno esperado do investimento ficaria por volta de ${payback.toFixed(1)} meses</p>
+    <p>Com nosso sistema, prevemos que a sua taxa de ocupação irá aumentar de <b>${ocupacaoAtual}%</b> para <span style="color: green;"><b>${novaOcupacao}%</b></span>.</p>
+    <p>A previsão também é que sua receita mensal atual sairá de <b>R$${recMesAtual.toFixed(2)}</b> para <b>R$${recMesSistema.toFixed(2)}</b> com nosso sistema.</p>
+    <p>Com isso, o retorno esperado do investimento ficaria por volta de <b>${payback.toFixed(1)}</b> meses</p>
     </div>
     </div>
     `// variavel que armazena menssagem no html
@@ -159,4 +161,5 @@
         resultados.innerHTML = html;// injeção no html
     }
 </script>
+
 </html>
