@@ -6,37 +6,60 @@
     <title>Simulador de Estacionamento</title>
 </head>
 
-<body>
+<style>
 
-    <h2>Simulador Financeiro de Estacionamento</h2>
-    <hr>
+        #id_body {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: large;
+    }
 
-    <p>
-        <label>Número de Vagas:</label><br>
-        <input type="number" id="numVagas_id" required>
-    </p>
+    #id_resultado {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: large;
+    }
 
-    <p>
-        <label>Valor Médio do Ticket (R$):</label><br>
-        <input type="number" id="ticket_id" required>
-    </p>
+    input {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: large;
+    }
 
-    <p>
-        <label>Dias de Funcionamento por Mês:</label><br>
-        <input type="number" id="dias_id" required>
-    </p>
+    button {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: large;
+    }
+</style>
 
-    <p>
-        <label>Taxa de Ocupação Atual (%):</label><br>
-        <input type="number" id="taxa_id" value="65" required>
-    </p>
+<body id="id_body">
 
-    <button onclick="calcular()">Calcular Resultados</button>
+    <h1 style="text-align: center;">Simulador Financeiro de Estacionamento</h2>
+        <hr>
+        <div style="text-align: center;">
+            <p>
+                <label>Número de Vagas:</label><br>
+                <input type="number" id="numVagas_id" required>
+            </p>
 
+            <p>
+                <label>Valor Médio do Ticket (R$):</label><br>
+                <input type="number" id="ticket_id" required>
+            </p>
 
-    <div id="resultados"></div>
+            <p>
+                <label>Dias de Funcionamento por Mês:</label><br>
+                <input type="number" id="dias_id" required>
+            </p>
+
+            <p>
+                <label>Taxa de Ocupação Atual (%):</label><br>
+                <input type="number" id="taxa_id" value="65" required>
+            </p>
+            <button onclick="calcular()">Calcular Resultados</button>
+            <hr>
+        </div>
+        <div id="resultados"></div>
 </body>
 <script>
+
     function calcular() {
         // valores inseridos
         let nVagas = Number(numVagas_id.value); // Numero de vagas
@@ -64,8 +87,8 @@
         let novaOcupacao = ocupacaoAtual + aumento;// nova ocupação apos o aumento 
         if (novaOcupacao > 100) {// sistema que impede passar de 100%
             novaOcupacao = 100;
-        }
-        
+        }   
+
         //
         let recMaxMes = nVagas * ticketMedio * diasMes; // receita maxima do mes 100% ocupado
 
@@ -86,32 +109,54 @@
         } else {
             payback = "ERRO";
         }
-        let html = ''// variavel que armazena menssagem no html
-            + '<hr>'
-            + '<h3>--- Resultados da Simulação ---</h3>'
-            + '<p><b>Número de Vagas:</b> ' + nVagas + '</p>'
-            + '<p><b>Valor Médio do Ticket:</b> R$' + ticketMedio.toFixed(2) + '</p>'
-            + '<p><b>Dias de Funcionamento por Mês:</b> ' + diasMes + '</p>'
-            + '<p><b>Taxa de Ocupação Atual:</b> ' + ocupacaoAtual.toFixed(2) + '%</p>'
-            + '<p><b>Taxa de Ocupação Potencial com o Sistema:</b> ' + novaOcupacao.toFixed(2) + '%</p>'
-            + '<p><b>Vagas Ociosas:</b> ' + vagasOciosas.toFixed(2) + '</p>'
-            + '<hr>'
-            + '<p><b>Investimento Total:</b> R$' + custoSistema.toFixed(2) + '</p>'
-            + '<hr>'
-            + '<p><b>Receita Máxima Mensal (100%):</b> R$' + recMaxMes.toFixed(2) + '</p>'
-            + '<p><b>Receita Mensal Atual:</b> R$' + recMesAtual.toFixed(2) + '</p>'
-            + '<p><b>Receita Anual Atual:</b> R$' + recAnoAtual.toFixed(2) + '</p>'
-            + '<hr>'
-            + '<p><b>Perda Diária Estimada:</b> R$' + perdaDia.toFixed(2) + '</p>'
-            + '<p><b>Perda Mensal Estimada:</b> R$' + perdaMes.toFixed(2) + '</p>'
-            + '<hr>'
-            + '<p><b>Receita Mensal com o Sistema:</b> R$' + recMesSistema.toFixed(2) + '</p>'
-            + '<p><b>Aumento Mensal:</b> R$' + diferenca_lucro.toFixed(2) + '</p>'
-            + '<hr>'
-            + '<p><b>Retorno do investimento:</b> ' + payback.toFixed(2) + ' meses</p>';
+        let html = `
+    <div class="main">
+    <h1> Resultados da simulação </h1>
+    <br>
+
+    <h2> Visão geral do Estacionamento:</h2>
+
+    <div class="texto">
+    <p>Número de Vagas: ${nVagas}</p>
+    <p>Valor Médio do Ticket: R$${ticketMedio.toFixed(2)}</p>
+    <p>Dias de Funcionamento por Mês: ${diasMes} </p>
+    <p>Taxa de Ocupação Atual: ${ocupacaoAtual.toFixed(2)}</p>
+    <p>Receita mensal atual: R$ ${recMesAtual}.</p>
+    </div>
+
+    <br>
+
+    <h2> Análise de perdas: </h2>
+
+    <div class="texto">
+    <p>Seu estacionamento opera com ${espacoDisponivel}% de ociosidade.</p>
+    <p>Perda mensal estimada é de <span style="color: red;"><b>R$${perdaMes.toFixed(2)}</b></span>,</p>
+    <p>Isso significa uma perda anual de <span style="color: red;"><b>R$${recAnoAtual.toFixed(2)}</b></span>.</P
+    </div>
+
+    <br>
+
+    <h2>Dicas que nosso sistema pode porpocionar:</h2>
+
+    <div class="texto">
+    <p> - Análise do dia com menor fluxo para tomar estratégias para reverter; </p>
+    <p> - Investir em marketing digital e local para atrair clientes pontuais; </p>
+    <p> - Criar promoções específicas para horários de menor movimento; </p>
+    <p> - Monitorar o feedback dos clientes para entender pequenas melhorias. </p>
+    </div>
+    <br>
+    
+    <h2>Potencial com nosso sistema:</h2>
+
+    <div class="texto">
+    <p>Com nosso sistema, prevemos que a sua taxa de ocupação irá aumentar de ${ocupacaoAtual}% para <span style="color: green;"><b>${novaOcupacao}%</b></span>.</p>
+    <p>A previsão também é que sua receita mensal atual sairá de R$ ${recMesAtual} para R$ ${recMesSistema} com nosso sistema.</p>
+    <p>Com isso, o retorno esperado do investimento ficaria por volta de ${payback.toFixed(1)} meses</p>
+    </div>
+    </div>
+    `// variavel que armazena menssagem no html
 
         resultados.innerHTML = html;// injeção no html
     }
 </script>
-
 </html>
