@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Simulador Financeiro - SmartPark</title>
+</head>
+<body id="id_body">
+
+    <h1 id="id_titulo">Simulador Financeiro - Smart Park</h1>
+    <h4 id="id_subtitulo">Transforme dados de ocupação em projeções reais de receita para uma gestão mais estratégica. <br>
+        Insira os dados a seguir:
+    </h4>
+
+    <br><br>
+
+    <label for="id_vagas">Total de vagas:</label><br>
+    <input type="text" id="id_vagas" placeholder="Insira o total de vagas">
+
+    <br><br>
+
+    <label for="id_ticket">Valor do ticket médio (R$):</label><br>
+    <input type="text" id="id_ticket" placeholder="Insira o valor do ticket">
+
+    <br><br>
+
+    <label for="id_vazias">Vagas vazias diariamente (ociosidade):</label><br>
+    <input type="text" id="id_vazias" placeholder="Insira as vagas vazias">
+
+    <br><br><br><br>
+
+    <button onclick="analisar()">Analisar Financeiro</button>
+
+    <br><br>
+
+    <div id="id_resultado"></div>
+
+</body>
+</html>
+
+<script>
+    function analisar()
+    {
+        // Variaveis
+        let vagas = Number(id_vagas.value);
+        let valor_vaga = Number(id_ticket.value);
+        let vagas_vazias = Number(id_vazias.value);
+
+        // Cálculo da porcentagem de ociosidade
+        let porcentagem_vagas_vazias = (vagas_vazias / vagas) * 100;
+
+        // Cálculo da receita mensal atual das vagas ocupadas
+        let receita_mensal_atual = (vagas - vagas_vazias) * valor_vaga * 30;
+        let receita_anual_atual = receita_mensal_atual * 12;
+
+        // Cálculo da perda anual
+        let perda_anual = (vagas_vazias * valor_vaga) * 365;
+
+        // Cálculo da perda mensal
+        let perda_mensal = (vagas_vazias * valor_vaga) * 30;
+
+        // 4. Ganho estimado com o sistema
+        let ganho_estimado = perda_anual;
+        
+        // Porcentagem de aumento real sobre o que ele ganha hoje
+        let porcentagem_aumento_receita = (ganho_estimado / receita_anual_atual) * 100;
+
+        // Recomendações
+        let recomendacao = '';
+
+        // Verifica se algum dos inputs estão sem valores
+        if (vagas == '' || valor_vaga == '' || vagas_vazias == '')
+        {
+            alert(`Certifique-se de preencher todos os campos antes de continuar!`);
+            recomendacao = ``;
+            id_resultado.innerHTML = ``;
+        }
+
+        // Verifica se algum dos inputs são menor/menor ou igual a 0
+        else if (vagas <= 0 || valor_vaga <= 0 || vagas_vazias < 0)
+        {
+            alert(`Insira valores válidos antes de continuar!`);
+            recomendacao = ``;
+            id_resultado.innerHTML = ``;
+        }
+
+        // Verifica se as vagas vazias são maiores que as vagas totais
+        else if (vagas_vazias > vagas)
+        {
+            alert(`Vagas vazias não podem ser maiores que o total de vagas!`);
+            recomendacao = ``;
+            id_resultado.innerHTML = ``;
+        }
+
+        else
+        {
+            // Verifica a respeito da % de aumento da receita
+            if (porcentagem_aumento_receita < 10)
+            {
+                // Exibição
+                recomendacao = `Seu estacionamento já tem boa ocupação.
+                                <br> <b>Ações sugeridas:</b>
+                                <br> - Implementar o sistema SmartPark para otimizar o uso das vagas;
+                                <br> - Investir em marketing digital e local para atrair clientes pontuais;
+                                <br> - Criar promoções específicas para horários de menor movimento;
+                                <br> - Monitorar o feedback dos clientes para entender pequenas melhorias.`;
+            } 
+
+            else if (porcentagem_aumento_receita < 30)
+            {
+                // Exibição
+                recomendacao = `Existe espaço para melhorar a rotatividade.
+                                <br> <b>Ações sugeridas:</b>
+                                <br> - Implementar o sistema SmartPark para aumentar a ocupação e rotatividade;
+                                <br> - Ajustar preços de acordo com horários de pico e vazio;
+                                <br> - Criar pacotes promocionais para clientes frequentes;
+                                <br> - Investir em marketing segmentado para atrair novos clientes;
+                                <br> - Otimizar o layout do estacionamento para agilizar entradas e saídas.`;
+            } 
+            
+            else
+            {
+                // Exibição
+                recomendacao = `Grande potencial de aumento de receita.
+                                <br> <b>Ações sugeridas:</b>
+                                <br> - Implementar o sistema SmartPark imediatamente para maximizar ganhos;
+                                <br> - Usar marketing agressivo para divulgar a novidade e atrair mais clientes;
+                                <br> - Considerar expansão de vagas se houver demanda;
+                                <br> - Criar relatórios periódicos para acompanhar o aumento real de receita.`;
+            }
+
+            // Exibição
+            id_resultado.innerHTML = `Recomendação:</b> ${recomendacao}
+                                    <br><br> Seu estacionamento opera com ${porcentagem_vagas_vazias.toFixed(2)}% de ociosidade.
+                                    <br> Perda mensal de R$ ${perda_mensal.toFixed(2)}
+                                    <br> Isso significa uma perda anual de: R$ ${perda_anual.toFixed(2)}
+                                    <br> Com nosso sistema, sua receita pode subir até R$ ${ganho_estimado.toFixed(2)}
+                                    <br> Isso representa um aumento de até ${porcentagem_aumento_receita.toFixed(2)}% em sua receita anual.
+                                    <br><br><br><br><br><br><br>`;
+        }
+    }
+</script>
+
+<style>
+
+    #id_body
+    {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: large;
+    }
+
+    #id_resultado
+    {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: large;
+    }
+
+    input
+    {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: large;
+    }
+
+    button
+    {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: large;
+    }
+
+</style>
