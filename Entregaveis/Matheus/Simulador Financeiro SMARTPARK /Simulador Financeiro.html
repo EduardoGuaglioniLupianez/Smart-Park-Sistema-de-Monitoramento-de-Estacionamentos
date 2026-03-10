@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulador Financeiro - SmartPark</title>
+</head>
+
+<body>
+
+<h1>Simulador Financeiro - SmartPark</h1>
+
+<h2>
+<a href="O que é a SmartPark.html">O que é a SmartPark?</a>
+</h2>
+
+<div>
+
+<h3>Verificar o orçamento total</h3>
+
+<span>Quantas vagas serão implantadas?</span><br>
+<input type="number" id="id_qtdVagas"><br><br>
+
+</div>
+
+<div>
+
+<h3>Em quanto tempo vou recuperar esse investimento?</h3>
+
+<span>Qual o valor do ticket médio diário (R$)?</span><br>
+<input type="number" id="id_ticket"><br><br>
+
+<span>Qual a taxa de ocupação diária (%)?</span><br>
+<input type="number" id="id_ocup"><br><br>
+
+<span>Quantos dias no mês o estacionamento funciona?</span><br>
+<input type="number" id="id_diasFuncio" max="31"><br><br>
+
+<span>Informe sua despesa mensal (R$):</span><br>
+<input type="number" id="id_despesas"><br><br>
+
+</div>
+
+<button onclick="verificar()">Verificar Resultados</button>
+
+<br><br>
+
+<span id="id_mensagem"></span>
+
+<script>
+
+let simulacao = 0
+
+function verificar(){
+
+simulacao++
+
+let qtdVagas = Number(id_qtdVagas.value)
+let ticketMedio = Number(id_ticket.value)
+let taxaOcup = Number(id_ocup.value) / 100
+let diasFuncionamento = Number(id_diasFuncio.value)
+let despesas = Number(id_despesas.value)
+
+if(qtdVagas <= 0){
+id_mensagem.innerHTML = "Informe uma quantidade válida de vagas."
+return
+}
+
+if(ticketMedio <= 0){
+id_mensagem.innerHTML = "Informe um ticket médio válido."
+return
+}
+
+if(taxaOcup <= 0){
+id_mensagem.innerHTML = "Informe uma taxa de ocupação válida."
+return
+}
+
+if(taxaOcup > 1){
+id_mensagem.innerHTML = "A taxa de ocupação não pode ser maior que 100%."
+return
+}
+
+if(diasFuncionamento <= 0){
+id_mensagem.innerHTML = "Informe os dias de funcionamento."
+return
+}
+
+if(despesas < 0){
+id_mensagem.innerHTML = "A despesa não pode ser negativa."
+return
+}
+
+/* Equipamentos */
+
+let qtdArduinos = Math.ceil(qtdVagas / 6)
+let qtdSensores = qtdVagas
+let qtdJumpers = qtdSensores * 3
+
+/* Custos */
+
+let valorArduino = qtdArduinos * 250
+let valorSensores = qtdSensores * 10
+let valorJumpers = qtdJumpers * 10
+
+let orcamentoTotal = valorArduino + valorSensores + valorJumpers
+let margemReceita = orcamentoTotal * 0.20
+let investimentoInicial = orcamentoTotal + margemReceita
+
+/* Receita */
+
+let faturamentoBruto = qtdVagas * ticketMedio * taxaOcup * diasFuncionamento
+let lucroLiquido = faturamentoBruto - despesas
+
+let resultado = `
+<b>SIMULAÇÃO ${simulacao}</b><br><br>
+
+<b>Equipamentos necessários:</b><br>
+${qtdArduinos} Arduino(s) - R$${valorArduino.toFixed(2).replace('.',',')}<br>
+${qtdSensores} Sensor(es) - R$${valorSensores.toFixed(2).replace('.',',')}<br>
+${qtdJumpers} Jumper(s) - R$${valorJumpers.toFixed(2).replace('.',',')}<br><br>
+
+<b>Custo total de instalação:</b><br>
+R$${orcamentoTotal.toFixed(2).replace('.',',')}<br><br>
+
+<b>Investimento inicial total:</b><br>
+R$${investimentoInicial.toFixed(2).replace('.',',')}<br><br>
+
+<b>Faturamento bruto mensal:</b><br>
+R$${faturamentoBruto.toFixed(2).replace('.',',')}<br>
+
+<b>Lucro líquido mensal:</b><br>
+R$${lucroLiquido.toFixed(2).replace('.',',')}<br><br>
+`
+
+if(lucroLiquido > 0){
+
+let payback = investimentoInicial / lucroLiquido
+let paybackDias = Math.ceil(payback * 30)
+
+resultado += `
+<b>Tempo de retorno do investimento:</b><br>
+${payback.toFixed(1)} meses<br>
+(aproximadamente ${paybackDias} dias)
+`
+
+}
+
+if(lucroLiquido <= 0){
+
+resultado += `
+<b>ERRO:</b> O lucro mensal está negativo.<br>
+Aumente o ticket médio ou reduza despesas.
+`
+
+}
+
+id_mensagem.innerHTML = resultado
+
+}
+
+</script>
+
+</body>
+</html>
