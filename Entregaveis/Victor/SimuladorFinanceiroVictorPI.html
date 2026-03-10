@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador financeiro</title>
+</head>
+<body>
+    <h1>Simulador financeiro do SmartPark™</h1>
+    <h2>Quem somos?</h2>
+
+    <p>SmartPark™ é um serviço de automatização de estacionamentos com IoT.<br>
+        Com sensores de alta tecnologia, os estacionamentos passam de simples áreas<br> com listras brancas para um estacionamento inteligente.<br>
+        Capaz de entregar dados como horário de picos, setores viciados, dias mais cheios entre outras informações.</p>
+
+        <h2>Orçamento</h2>
+
+        <label>Quantas vagas deseja automatizar?</label>
+        <input type="text" id="id_vagas" placeholder="Ex: 67"><br>
+
+        <label>Qual é o valor do seu ticket médio?</label>
+        <input type="text" id="id_preco_hora" placeholder="Ex: 10"><br>
+
+        <label>Quantas vagas são ocupadas em média por dia?</label>
+        <input type="text" id="id_media_vagas" placeholder="Ex:40">
+        <br>
+        <button onclick="calcular()">Calcular Orçamento</button><br>
+
+        <div id="id_resultado"></div>
+</body>
+<script>
+    function calcular(){
+        let vagas = Number(id_vagas.value)
+        let ticket_médio = Number(id_preco_hora.value)
+        let vagas_ocupadas_em_média = Number(id_media_vagas.value)
+
+        let arduino = (vagas / 6) * 250
+        let sensor = vagas * 10
+        let jumper = sensor * 0.4
+
+        let receita_do_cliente =  (ticket_médio * vagas)
+        let receita_da_smartpark  = (vagas + arduino + sensor + jumper) * 3
+        let taxa_da_ocupacao = (vagas_ocupadas_em_média / vagas) * 100
+        
+        let receita_cliente_c_smartpark = receita_do_cliente * 1.3
+        let taxa_ocupacao_c_smartpark = taxa_da_ocupacao * 1.07
+
+        id_resultado.innerHTML = `
+        <br>
+        Sua receita sem o nosso produto sera de R$${receita_do_cliente} e sua taxa de ocupacao sera de ${taxa_da_ocupacao.toFixed(2)}%
+        <br>
+
+        O valor do orçamento será de R$${receita_da_smartpark.toFixed(2)}.
+        <br>
+        Agora com o nosso produto e um bom uso das dashboard's sua receita pode aumentar
+        para R$${receita_cliente_c_smartpark.toFixed(2)} e a taxa subira para ${taxa_ocupacao_c_smartpark.toFixed(2)}%`
+    }
+</script>
+</html>

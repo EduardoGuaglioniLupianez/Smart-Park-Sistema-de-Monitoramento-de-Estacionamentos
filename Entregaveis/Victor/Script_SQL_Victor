@@ -1,0 +1,44 @@
+CREATE DATABASE smart_park;
+
+USE smart_park;
+
+CREATE TABLE usuario(
+	id_usuario INT PRIMARY KEY AUTO_INCREMENT,
+	nome_usuario VARCHAR(40) NOT NULL,
+	email_usuario VARCHAR(40) NOT NULL,
+	senha_usuario VARCHAR(8) NOT NULL,
+	nivel_acesso_usuario VARCHAR(20) DEFAULT('Usuário Comum'),
+	CONSTRAINT Cnivel_acesso_usuario CHECK(nivel_acesso_usuario IN('Administrador','Cliente','Usuário Comum'))
+);
+
+CREATE TABLE empresa(
+	id_empresa INT PRIMARY KEY AUTO_INCREMENT,
+    razao_social_empresa VARCHAR(40) NOT NULL,
+    cnpj_empresa CHAR(14) NOT NULL,
+    logradouro VARCHAR(100) NOT NULL,
+    numero_logradouro INT NOT NULL,
+    cidade VARCHAR(40) NOT NULL,
+    estado CHAR(2) NOT NULL,
+    cep CHAR(8) NOT NULL,
+    dt_cadastro DATETIME DEFAULT NOW()
+);
+
+CREATE TABLE shopping(
+	id_shopping INT PRIMARY KEY AUTO_INCREMENT,
+    razao_social_empresa VARCHAR(40) NOT NULL,
+    nome_shopping VARCHAR(40) NOT NULL,
+    qtd_vaga_total INT NOT NULL,
+    qtd_vaga_pcd INT,
+    qtd_vaga_idoso INT,
+    qtd_vaga_moto INT,
+    qtd_vaga_vip INT, 
+    valor_diario_vaga DECIMAL(4,2) NOT NULL
+);
+
+CREATE TABLE sensor( 
+id_sensor INT PRIMARY KEY AUTO_INCREMENT,
+id_vaga INT UNIQUE NOT NULL,
+modelo_sensor CHAR(5) DEFAULT 'LM393',
+status_conexao VARCHAR(25),
+dt_Leitura DATETIME DEFAULT NOW() NOT NULL,
+CONSTRAINT top CHECK(status_conexao IN ('Ativo', 'Inativo')));
