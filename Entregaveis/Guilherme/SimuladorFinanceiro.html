@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt‑br">
+<head>
+    <meta charset="UTF-8">
+    <title>Simulador de Estacionamento</title>
+</head>
+<body>
+
+    <h2>Simulador Financeiro de Estacionamento</h2>
+    <hr>
+
+    <p>
+        <label>Número de Vagas:</label><br>
+        <input type="number" id="numVagas_id" required>
+    </p>
+
+    <p>
+        <label>Valor Médio do Ticket (R$):</label><br>
+        <input type="number" id="ticket_id" required>
+    </p>
+
+    <p>
+        <label>Dias de Funcionamento por Mês:</label><br>
+        <input type="number" id="dias_id" required>
+    </p>
+
+    <p>
+        <label>Taxa de Ocupação Atual (%):</label><br>
+        <input type="number" id="taxa_id" value="65" required>
+    </p>
+
+    <button onclick="calcular()">Calcular Resultados</button>
+
+
+    <div id="resultados"></div>
+
+    <script>
+        function calcular() {
+
+            let nVagas = Number(numVagas_id.value);           
+            let ticketMedio = Number(ticket_id.value);
+            let diasMes = Number(dias_id.value);
+            let taxaOcupacao = Number(taxa_id.value);
+
+            let taxaPot = taxaOcupacao + 12.5;
+            let vagasOciosas = nVagas - (nVagas * (taxaOcupacao / 100));
+
+            let custoPorVaga = 350;
+            let custoFixoInstalacao = 30000;
+            let custoTotal = custoPorVaga * nVagas;
+            let investimento = custoTotal + custoFixoInstalacao;
+
+            let recMesAtual = nVagas * ticketMedio * diasMes * (taxaOcupacao / 100);
+            let recAnoAtual = recMesAtual * 12;
+
+            let perdaDia = vagasOciosas * ticketMedio;
+            let perdaMes = perdaDia * diasMes;
+            let perdaAno = perdaMes * 12;
+
+            let recMaxMes = nVagas * ticketMedio * diasMes;
+            let recMesSistema = nVagas * ticketMedio * diasMes * (taxaPot / 100);
+            let aumentoMes = recMesSistema - recMesAtual;
+            let aumentoAno = aumentoMes * 12;
+
+            let payback = investimento / aumentoMes;
+
+            let html = ''
+                + '<hr>'
+                + '<h3>--- Resultados da Simulação ---</h3>'
+                + '<p><b>Número de Vagas:</b> ' + nVagas + '</p>'
+                + '<p><b>Valor Médio do Ticket:</b> R$' + ticketMedio.toFixed(2) + '</p>'
+                + '<p><b>Dias de Funcionamento por Mês:</b> ' + diasMes + '</p>'
+                + '<p><b>Taxa de Ocupação Atual:</b> ' + taxaOcupacao.toFixed(2) + '%</p>'
+                + '<p><b>Taxa de Ocupação Potencial com o Sistema:</b> ' + taxaPot.toFixed(2) + '%</p>'
+                + '<p><b>Vagas Ociosas:</b> ' + vagasOciosas.toFixed(2) + '</p>'
+                +'<hr>'
+                + '<p><b>Investimento Total:</b> R$' + investimento.toFixed(2) + '</p>'
+                + '<hr>'
+                + '<p><b>Receita Máxima Mensal (100%):</b> R$' + recMaxMes.toFixed(2) + '</p>'
+                + '<p><b>Receita Mensal Atual:</b> R$' + recMesAtual.toFixed(2) + '</p>'
+                + '<p><b>Receita Anual Atual:</b> R$' + recAnoAtual.toFixed(2) + '</p>'
+                + '<hr>'
+                + '<p><b>Perda Diária Estimada:</b> R$' + perdaDia.toFixed(2) + '</p>'
+                + '<p><b>Perda Mensal Estimada:</b> R$' + perdaMes.toFixed(2) + '</p>'
+                + '<p><b>Perda Anual Estimada:</b> R$' + perdaAno.toFixed(2) + '</p>'
+                + '<hr>'
+                + '<p><b>Receita Mensal com o Sistema:</b> R$' + recMesSistema.toFixed(2) + '</p>'
+                + '<p><b>Aumento Mensal:</b> R$' + aumentoMes.toFixed(2) + '</p>'
+                + '<p><b>Aumento Anual:</b> R$' + aumentoAno.toFixed(2) + '</p>'
+                + '<hr>'
+                + '<p><b>Retorno do investimento:</b> ' + payback.toFixed(2) + ' meses</p>';
+
+            resultados.innerHTML = html; 
+        }
+    </script>
+</body>
+</html>
