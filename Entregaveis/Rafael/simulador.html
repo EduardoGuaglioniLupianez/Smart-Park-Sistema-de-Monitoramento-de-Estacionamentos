@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Simulador Financeiro</title>
+</head>
+
+<body>
+
+    <h1>Simulador Financeiro</h1>
+
+    <p>Quantidade de vagas:</p>
+    <input type="number" id="vagas">
+
+    <p>Ticket médio por carro (R$):</p>
+    <input type="number" id="ticket">
+
+    <p>Taxa média de ocupação (%):</p>
+    <input type="number" id="ocupacao">
+
+    <p>Dias de funcionamento no mês:</p>
+    <input type="number" id="dias">
+
+    <p>Custo de instalação por sensor Arduino (R$):</p>
+    <input type="number" id="sensor">
+
+    <br><br>
+
+    <button onclick="simular()">Calcular</button>
+
+    <h3 id="resultado"></h3>
+
+    <script>
+
+        function simular() {
+
+            let vagasNum = Number(vagas.value)
+            let ticketNum = Number(ticket.value)
+            let ocupacaoNum = Number(ocupacao.value) / 100
+            let diasNum = Number(dias.value)
+            let sensorNum = Number(sensor.value)
+
+            let carrosDia = vagasNum * ocupacaoNum
+            let faturamentoDia = carrosDia * ticketNum
+            let faturamentoMes = faturamentoDia * diasNum
+            let custoInstalacao = vagasNum * sensorNum
+            let lucroEstimado = faturamentoMes - custoInstalacao
+
+            resultado.innerHTML =
+                `
+Carros por dia: ${carrosDia.toFixed(0)} <br>
+Faturamento diário: R$ ${faturamentoDia.toFixed(2)} <br>
+Faturamento mensal: R$ ${faturamentoMes.toFixed(2)} <br>
+Custo dos sensores: R$ ${custoInstalacao.toFixed(2)} <br>
+Lucro estimado: R$ ${lucroEstimado.toFixed(2)}
+`
+
+        }
+
+    </script>
+
+</body>
+
+</html>
