@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt‑br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Simulador de Estacionamento</title>
+</head>
+
+<style>
+    #id_body {
+        margin: 10;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: large;
+        background-color: #F4F4F4;
+    }
+
+    #id_resultado {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: large;
+    }
+
+    input {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: large;
+    }
+
+    button {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: large;
+    }
+</style>
+
+<body id="id_body">
+
+    <h1 style="text-align: center; background-color: rgb(50, 37, 133); color: white;">Simulador Financeiro - SmartPark
+    </h1>
+    <hr>
+    <div style="text-align: center;">
+        <p>
+            <label><b>Número de Vagas:</b></label><br>
+            <input type="number" id="numVagas_id" required>
+        </p>
+
+        <p>
+            <label><b>Valor Médio do Ticket (R$):</b></label><br>
+            <input type="number" id="ticket_id" required>
+        </p>
+
+        <p>
+            <label><b>Dias de Funcionamento por Mês:</b></label><br>
+            <input type="number" id="dias_id" required>
+        </p>
+
+        <p>
+            <label><b>Taxa de Ocupação Atual (%):</b></label><br>
+            <input type="number" id="taxa_id" value="65" required>
+        </p>
+        <button onclick="calcular()">Calcular Resultados</button>
+        <hr>
+    </div>
+    <div id="resultados"></div>
+</body>
+<script>
+
+    function calcular() {
+        // valores inseridos
+        let nVagas = Number(numVagas_id.value); // Numero de vagas
+        let ticketMedio = Number(ticket_id.value); // valor do ticket 
+        let diasMes = Number(dias_id.value); // dia de funcionamento no Mês
+        let ocupacaoAtual = Number(taxa_id.value); // porcentagem em numero inteiro de ocupação do estacionameto
+
+        // ORÇAMENTO FIXO DO SISTEMA (quanto vai custar)(logica)
+        let qtdArduinos = (nVagas / 6); // 1 Arduino para cada 6 vagas
+        let qtdSensores = nVagas;// numero de sensores é igual a o numero de vagas ja que uma vaga usa um sensor
+        let qtdJumpers = qtdSensores * 3;//cada sensor usa 3 jumpers logo a qtd de junper é = a qantidade de snesores X 3
+
+        let valorArduino = qtdArduinos * 100;// cada arduindo custa R$100
+        let valorSensores = qtdSensores * 10;// cada sensor custa R$10
+        let valorJumpers = qtdJumpers * 1; // cada jumper custa R$1
+
+        let comissao = 10;// valor base de valor para multiplicação
+        let custoSistema = comissao * (valorArduino + valorSensores + valorJumpers); // custo total do sistema valor de
+        // todas as peças ultilizadas no estacionamento * a comissao pre avaliada
+
+        // MODELO PROPORCIONAL DE AUMENTO DE OCUPAÇÃO
+        let espacoDisponivel = 100 - ocupacaoAtual; // espaço vazio do estacionamento
+        let taxaDeEficiencia = 0.20; // taxa de 20% 
+        let aumento = espacoDisponivel * taxaDeEficiencia;// taxa de 20% em cima do espaço vazio do estacionamento
+        let novaOcupacao = ocupacaoAtual + aumento;// nova ocupação apos o aumento 
+        if (novaOcupacao > 100) {// sistema que impede passar de 100%
+            novaOcupacao = 100;
+        }
+
+        //
+        let recMaxMes = nVagas * ticketMedio * diasMes; // receita maxima do mes 100% ocupado
+
+        let recMesAtual = nVagas * ticketMedio * diasMes * (ocupacaoAtual / 100);// receita do mes com a taxa de ocupação atual(sem o sistema)
+        let recAnoAtual = recMesAtual * 12;// receita do ano atual(sem o sistema)
+
+        let vagasOciosas = nVagas - (nVagas * ocupacaoAtual / 100);// vagas vazia em numero bruto
+        let perdaDia = vagasOciosas * ticketMedio;// perda de receita por vagas vazias por dia
+        let perdaMes = perdaDia * diasMes;// perda de recita por vagas vazias no mes
+        let perdaAno = perdaMes * 12
+
+        let recMesSistema = nVagas * ticketMedio * diasMes * (novaOcupacao / 100);// receita do mes com o sistema e com a taxa de ocupação nova
+        let diferenca_lucro = recMesSistema - recMesAtual;// diferença de receita entre a antiga sem o sistema e a nova
+        let receitaExtraAnual = diferenca_lucro * 12
+
+        let payback = 0;// variavel base para payback
+
+        if (diferenca_lucro > 0) {// se a diferença de lucro for maior que zero
+            payback = custoSistema / diferenca_lucro;// o payback é o custo do sistema dividido pela diferença de lucro ( fica em mes ja que o calculo é em mes)
+        } else {
+            payback = "ERRO";
+        }
+        let html = `
+    <div class="main">
+    <h1 style="text-align: center;"> <b> Resultados da simulação </b></h1>
+    <br>
+
+    <h2>Visão geral do Estacionamento:</h2>
+
+    <div class="texto">
+    <p>Número de Vagas: <b>${nVagas}</b></p>
+    <p>Valor Médio do Ticket: <b>R$${ticketMedio.toFixed(2).replace('.', ',')}</b></p>
+    <p>Dias de Funcionamento por Mês: <b>${diasMes}</b> </p>
+    <p>Taxa de Ocupação Atual: <b>${ocupacaoAtual.toFixed(2)}%</b></p>
+    <p>Receita mensal atual:<b> R$${recMesAtual.toFixed(2).replace('.', ',')}</b>.</p>
+    <p>Investimento total para implantação do sistema:<b> R$${custoSistema.toFixed(2).replace('.', ',')}</b></p>
+    </div>
+
+    <br>
+
+    <h2> Análise de perdas: </h2>
+
+    <div class="texto">
+    <p>Seu estacionamento opera com <b>${espacoDisponivel}% de ociosidade.</b></p>
+    <p>Esses <b>${espacoDisponivel}%</b> representam uma perda mensal de <span style="color: red;"><b>R$${perdaMes.toFixed(2).replace('.', ',')}</b></span>.</p>
+    <p>Isso significa uma perda anual de <span style="color: red;"><b>R$${perdaAno.toFixed(2).replace('.', ',')}</b></span>.</p>
+    </div>
+    <br> <br>
+    
+    <h2>Potencial com nosso sistema:</h2>
+
+    <div class="texto">
+    <p>Com a utilização correta dos dados fornecidos pelo nosso dashboard, prevemos que a sua taxa de ocupação poderá aumentar de <b>${ocupacaoAtual}%</b> para <span style="color: green;"><b>${novaOcupacao}%</b></span>.</p>
+
+<p>Esse aumento de <span style="color: green;"><b>${aumento.toFixed(2).replace('.', ',')}</b>%</span> em valores monetários representa que sua receita sairá de: <span style="color: orange;"><b>R$${recMesAtual.toFixed(2).replace('.', ',')}</b></span> para <span style="color: green;"><b>R$${recMesSistema.toFixed(2).replace('.', ',')}</b></span> utilizando o nosso sistema.</p>
+
+<p>Isso representa uma diferença por mês de <span style="color: green;"><b>R$${diferenca_lucro.toFixed(2).replace('.', ',')}</b></span> que representa, ao final de um ano, <span style="color: green;"><b>R$${receitaExtraAnual.toFixed(2).replace('.', ',')}</b></span>.</p>
+    <p>Com isso, o retorno esperado do investimento ficaria por volta de <b>${payback.toFixed(1).replace('.', ',')}</b> meses</p>
+    </div>
+    </div>
+    `// variavel que armazena menssagem no html
+        resultados.innerHTML = html;// injeção no html
+    }
+</script>
+
+</html>
